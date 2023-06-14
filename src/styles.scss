@@ -1,1 +1,102 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+// $gutter: 1rem; //for primeflex grid system
+// @import "assets/layout/styles/layout/layout.scss";
+/* You can add global styles to this file, and also import other style files */
+$gutter: 1rem; //for primeflex grid system
+@import 'assets/layout/styles/layout/layout.scss';
+
+/* PrimeNG */
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "assets/layout/styles/theme/bootstrap4-light-blue/theme.css";
+@import "../node_modules/primeflex/primeflex.scss";
+@import "../node_modules/primeicons/primeicons.css";
+
+// /* Demos */
+// @import "assets/demo/styles/flags/flags.css";
+// @import "assets/demo/styles/badges.scss";
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+
+body {
+  font-family: 'Poppins' !important;
+}
+
+.float-r {
+  float: right;
+}
+
+.float-l {
+  float: left;
+}
+
+#fadein div {
+  animation: fadein 0.5s;
+  -moz-animation: fadein 0.5s;
+  /* Firefox */
+  -webkit-animation: fadein 0.5s;
+  /* Safari and Chrome */
+  -o-animation: fadein 0.5s;
+  /* Opera */
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadein {
+
+  /* Firefox */
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadein {
+
+  /* Safari and Chrome */
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadein {
+
+  /* Opera */
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.green-gradient {
+  background: #52c234;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #061700, #52c234);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #061700, #52c234);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
