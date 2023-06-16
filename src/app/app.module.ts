@@ -14,7 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from './main/ui/ui.module';
 import { httpInterceptorProviders } from './api/interceptors/interceptors';
 import { appReducer } from './store/app.reducer';
-import { EmployeeNewComponent } from './main/admin/layout/pages/employee/employee-new/employee-new.component';
+
 
 
 

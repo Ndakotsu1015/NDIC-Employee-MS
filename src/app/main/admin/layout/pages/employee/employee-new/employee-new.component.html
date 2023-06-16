@@ -1,170 +1,241 @@
-<!-- <div class="p-3 card p-shadow-24">
-  <h3 class="text text-primary p-shadow-1 font-bold"></h3>
-  <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
-    <div class="shadow-1">
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
-          <label for="state" class="block">State</label>
-          <p-dropdown formControlName="State_id" [options]="states"
-            optionLabel="name"
-            optionValue="id" class="form-control"></p-dropdown>
+
+<div class="grid">
+
+  <div class="col-12 md:col-12 ">
+
+    <div class="card p-fluid">
+      <h5 style="color:#17A2B8">Employee Registration</h5>
+      <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
+
+        <div
+          class="flex justify-content-between lg:col-6 justify-content-center">
+          <div class="field col-6">
+
+            <div
+              class="lg:col-8 sm:col-12  md:col-6 ">
+              Image Upload
+            </div>
+
+            <div class="text-600" style="height: 35px;">
+              Allowed JPG, GIF or PNG. Max size of
+              800kB
+            </div>
+            <div class="flex justify-content-center">
+              <img
+                style="border-radius: 6px"
+                class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
+                [src]="uploadedImage"
+                style="
+            max-width: 100px;
+            max-height: 100px;
+          " />
+
+            </div>
+            <button
+              pButton
+              pRipple
+              label="Upload Image"
+              type="button"
+              (click)="imageFile.click()"
+              class="p-3 w-full mt-auto p-button-info"></button>
+            <input
+              type="file"
+              #imageFile
+              name="ImageUpload"
+              id="ImageUpload"
+              hidden
+              accept="image/*"
+              (change)="
+              handleFileInputUploadImage($event)
+            " />
+
+          </div>
+          <div class="field col-6 justify-content-center">
+
+            <div
+              class="lg:col-8 sm:col-12 md:col-6">
+              Upload File
+            </div>
+
+            <div class="text-600" style="height: 35px;">
+              Allowed PDF,TEXT, WORD Max size of
+              800kB
+            </div>
+            <p-fileupload name="demo[]"
+              url="https://www.primefaces.org/cdn/api/upload.php"
+              (onUpload)="onUpload($event)" [multiple]="true" accept="image/*">
+              <ng-template pTemplate="content">
+                <ul *ngIf="uploadedFiles.length">
+                  <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{
+                    file.size }} bytes</li>
+                </ul>
+              </ng-template>
+            </p-fileupload>
+            <div class="flex justify-content-center">
+              <img
+                style="border-radius: 6px"
+                class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
+                [src]="uploadedImage"
+                style="
+            max-width: 100px;
+            max-height: 100px;
+          " />
+            </div>
+            <button
+              pButton
+              type="button"
+              pRipple
+              label="Upload Image"
+              (click)="imageFile.click()"
+              class="p-3 w-full mt-auto p-button-info"></button>
+            <input
+              type="file"
+              #imageFile
+              name="ImageUpload"
+              id="ImageUpload"
+              hidden
+              accept="image/*"
+              (change)="
+              handleFileInputUploadImage($event)
+            " />
+
+          </div>
+        </div>
+
+        <div class="p-formgrid grid">
+
+          <div class="field col">
+            <label htmlFor="state">Name of Employee
+              <span class="p-error">
+                *</span> </label>
+            <input pInputText id="name" type="text" formControlName="name"
+              placeholder="Enter Name" />
+
+            <small class="p-error block"
+              *ngIf="employeeFormControls['name'].errors?.['required']
+                      && employeeFormControls['name'].touched">
+              Employee name is required
+            </small>
+
+          </div>
+          <div class="field col">
+            <label For="email">Email
+              <span class="p-error">
+                *</span>
+            </label>
+            <input pInputText id="email" type="text" formControlName="email"
+              placeholder="Enter Email Address" />
+            <small class="p-error block"
+              *ngIf="employeeFormControls['email'].errors?.['required']
+                      && employeeFormControls['email'].touched">
+              Email address is required
+            </small>
+          </div>
+        </div>
+        <div class="p-formgrid grid">
+          <div class="field col">
+            <label For="state">State of Origin
+              <span class="p-error">
+                *</span>
+            </label>
+            <p-dropdown [options]="states" optionLabel="name"
+              placeholder="Select State" formControlName="state_id"
+              optionValue="id">
+            </p-dropdown>
+            <small class="p-error block"
+              *ngIf="employeeFormControls['state_id'].errors?.['required']
+                      && employeeFormControls['state_id'].touched">
+              Email address is required
+            </small>
+          </div>
+          <div class="field col">
+            <label for="lga">Local Government
+              <span class="p-error">
+                *</span>
+            </label>
+            <p-dropdown [options]="lgas" optionLabel="name"
+              formControlName="local_government_id"
+              placeholder="Select Local Government"
+              optionValue="id"></p-dropdown>
+            <small class="p-error block"
+              *ngIf="employeeFormControls['local_government_id'].errors?.['required']
+                      && employeeFormControls['local_government_id'].touched">
+              Local government is required
+            </small>
+          </div>
+        </div>
+        <div class="p-formgrid grid">
+          <div class="field col">
+            <label htmlFor="martitalStatus">Marital Status
+              <span class="p-error">
+                *</span>
+            </label>{{employeeFormControls['marital_status_id'].value}}
+            <p-dropdown [options]="martitalStatus" optionLabel="status"
+              placeholder="Select Marital Staus"
+              formControlName="marital_status_id"
+              optionValue="id"></p-dropdown>
+
+          </div>
+          <div class="field col">
+            <label For="email2">Date of Birth
+              <span class="p-error">
+                *</span>
+            </label>
+            <p-calendar formControlName="date_of_birth" [showIcon]="true"
+              dateFormat="yy-mm-dd"
+              [maxDate]="today"></p-calendar>
+            <small class="p-error block"
+              *ngIf="employeeFormControls['date_of_birth'].errors?.['required']
+                      && employeeFormControls['date_of_birth'].touched">
+              Date of birth is required
+            </small>
+          </div>
 
         </div>
 
-      </div>
+        <div class="p-formgrid grid">
+          <div class="field col">
+            <label For="address">Contact Address
+              <span class="p-error">
+                *</span>
+            </label>
+            <textarea rows="2" cols pInputTextarea
+              formControlName="address">
+            </textarea>
+            <small class="p-error block"
+              *ngIf="employeeFormControls['address'].errors?.['required']
+                    && employeeFormControls['address'].touched">
+              Contact address is required
+            </small>
+
+          </div>
+          <div class="field col">
+            <label htmlFor="state">Mobile Number
+              <span class="p-error">
+                *</span> </label>
+            <input pInputText id="name" type="text"
+              formControlName="phone_number"
+              placeholder="Enter Phone Number" />
+
+            <small class="p-error block"
+              *ngIf="employeeFormControls['phone_number'].errors?.['required']
+                      && employeeFormControls['phone_number'].touched">
+              Phone number is required
+            </small>
+
+          </div>
+
+        </div>
+
+        <hr style="color: blue;">
+
+        <div class="col-1 p-1">
+          <button pButton type="submit" label="Submit"
+            class="p-button-info ml-12 justify-self-right"
+            icon="pi pi-user-plus" [disabled]="employeeForm.invalid"></button>
+        </div>
+      </form>
 
     </div>
-  </form>
-
-</div> -->
-
-<div class="p-3 card p-shadow-24">
-  <h5 class="text text-info p-shadow-1" style="color: #17A2B8">Register Employee</h5>
-  <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
-
-    <div class="card shadow-1">
-      <div class="formgrid grid">
-        <div class="field col-12 md:col-6">
-          <label for="name"><b>Employee Name</b><span
-              class="p-error"> *</span></label>
-          <input id="name" type="text" formControlName="name"
-            class="text-base text-color surface-overlay
-                      p-2 border-1 border-solid surface-border border-round appearance-none outline-none
-                      focus:border-primary w-full"
-            required>
-          <small class="p-error"
-            *ngIf="employeeFormControls['name'].errors?.['required']
-                          && employeeFormControls['name'].touched">
-            Employee Name is required
-          </small>
-
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="email"><b>Email Address</b> <span class="p-error"> *</span></label>
-          <input id="email" type="text" formControlName="email"
-            class="text-base text-color surface-overlay
-                          p-2 border-1 border-solid surface-border border-round appearance-none outline-none
-                          focus:border-primary w-full"
-            required>
-          <small class="p-error"
-            *ngIf="employeeFormControls['email'].errors?.['required']
-                          && employeeFormControls['email'].touched">
-            Email address is required
-          </small>
-          <br>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="state_id" class="block"><b>State of Origin</b>
-            <span class="p-error">
-              *</span> </label>
-          <p-dropdown formControlName="state_id" [options]="states"
-            optionLabel="name"
-            optionValue="id" class="w-full block"
-            placeholder="Select State">
-          </p-dropdown>
-          <small class="p-error"
-            *ngIf="employeeFormControls['state_id'].errors?.['required']
-                          && employeeFormControls['state_id'].touched">
-            State of origin is required
-          </small>
-          <br>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="local_government_id" class="block"><b>Local Government</b>
-            <span class="p-error">
-              *</span> </label>
-          <p-dropdown formControlName="local_government_id" [options]="lgas"
-            optionLabel="name"
-            optionValue="id" class="w-full block"
-            placeholder="Select Local Government">
-          </p-dropdown>
-          <small class="p-error"
-            *ngIf="employeeFormControls['local_government_id'].errors?.['required']
-                          && employeeFormControls['local_government_id'].touched">
-            Local government is required
-          </small>
-          <br>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="phone_number"><b>Phone Number</b> <span class="p-error"> *</span></label>
-          <input id="phone_number" type="number" formControlName="phone_number"
-            class="text-base text-color surface-overlay
-                          p-2 border-1 border-solid surface-border border-round appearance-none outline-none
-                          focus:border-primary w-full"
-            required>
-          <small class="p-error"
-            *ngIf="employeeFormControls['phone_number'].errors?.['required']
-                          && employeeFormControls['phone_number'].touched">
-            Phone number is required
-          </small>
-          <br>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="marital_status_id" class="block"><b>Marital Status</b>
-            <span class="p-error">
-              *</span> </label>
-          <p-dropdown formControlName="marital_status_id"
-            [options]="martitalStatus"
-            optionLabel="status"
-            optionValue="id" class="w-full block"
-            placeholder="Select Marital Status">
-          </p-dropdown>
-          <small class="p-error"
-            *ngIf="employeeFormControls['marital_status_id'].errors?.['required']
-                          && employeeFormControls['marital_status_id'].touched">
-            Local government is required
-          </small>
-          <br>
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="file"><b>Date of Birth</b><span
-              class="p-error"> *</span></label>
-          <input id="date" type="date"
-            formControlName="date_of_birth"
-            class="text-base text-color surface-overlay
-                            p-2 border-1 border-solid surface-border border-round appearance-none outline-none
-                            focus:border-primary w-full"
-            required>
-
-          <small class="p-error"
-            *ngIf="employeeFormControls['date_of_birth'].errors?.['required']
-                          && employeeFormControls['date_of_birth'].touched">
-            File name is required
-          </small>
-
-        </div>
-
-        <div class="field col-12 md:col-6">
-          <label for="file"><b>Upload Image</b><span
-              class="p-error"> *</span></label>
-          <input id="date" type="file"
-            formControlName="file"
-            class="text-base text-color surface-overlay
-                            p-2 border-1 border-solid surface-border border-round appearance-none outline-none
-                            focus:border-primary w-full"
-            required>
-
-          <small class="p-error"
-            *ngIf="employeeFormControls['file'].errors?.['required']
-                          && employeeFormControls['file'].touched">
-            File name is required
-          </small>
-
-        </div>
-
-      </div>
-      <hr style="color: blue;">
-      <div class="flex justify-content-end">
-        <button pButton type="submit" label="Submit"
-          class="p-button-info ml-12 justify-self-right"
-          icon="pi pi-user" [disabled]="employeeForm"></button>
-      </div>
-    </div>
-  </form>
+  </div>
 </div>

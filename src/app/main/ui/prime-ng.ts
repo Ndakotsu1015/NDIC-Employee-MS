@@ -46,10 +46,12 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { ChipModule } from 'primeng/chip';
 import { DataViewModule } from 'primeng/dataview';
 import { AvatarModule } from 'primeng/avatar';
+import { ImageModule } from 'primeng/image';
 
 
 export const PRIMENG_IMPORTS = [
   AvatarModule,
+  ImageModule,
   ButtonModule,
   PasswordModule,
   SelectButtonModule,

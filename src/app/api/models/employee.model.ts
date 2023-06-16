@@ -10,6 +10,7 @@ export interface EmployeeResource {
   state_id: number;
   local_government_id: number;
   marital_status_id: number;
+  address: string;
 }
 
 export interface EmployeeRequest {
@@ -22,4 +23,5 @@ export interface EmployeeRequest {
   state_id: number;
   local_government_id: number;
   marital_status_id: number;
+  address: string;
 }

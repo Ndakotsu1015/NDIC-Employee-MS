@@ -33,7 +33,12 @@ export class AppMenuComponent implements OnInit {
               {
                 label: 'New Employee',
                 icon: 'pi pi-fw pi-check-square',
-                routerLink: ['./admin/pages/employee/new'],
+                routerLink: ['/admin/pages/employee/new'],
+              },
+              {
+                label: 'Employee List',
+                icon: 'pi pi-fw pi-check-square',
+                routerLink: ['/admin/pages/employee/list'],
               },
             ],
           },
@@ -62,6 +67,11 @@ export class AppMenuComponent implements OnInit {
               },
               {
                 label: 'New',
+                icon: 'pi pi-fw pi-user-plus',
+                routerLink: ['/admin/user/new'],
+              },
+              {
+                label: 'List',
                 icon: 'pi pi-fw pi-user-plus',
                 routerLink: ['/admin/user/new'],
               },

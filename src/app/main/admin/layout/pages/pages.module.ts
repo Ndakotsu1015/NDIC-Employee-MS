@@ -21,6 +21,7 @@ const routes: Routes = [
         loadChildren: () => import('./employee/employee.module').then(m => m.EmployeeModule),
       },
 
+
     ]
   }
 ]

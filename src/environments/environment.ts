@@ -7,6 +7,8 @@ export const environment = {
 
   apiUrl: 'http://localhost:8000/api',
 
+  imagePathPrefix: "http://localhost:8000/api/employees/file/get/",
+
 };
 
 /*
