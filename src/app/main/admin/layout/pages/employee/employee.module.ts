@@ -7,6 +7,8 @@ import { UiModule } from "src/app/main/ui/ui.module";
 import { EmployeeNewComponent } from "./employee-new/employee-new.component";
 import { FileUploadModule } from 'primeng/fileupload';
 import { EmployeeListComponent } from "./employee-list/employee-list.component";
+import { ConfirmationService } from "primeng/api";
+import { EmployeeDetailComponent } from "./employee-detail/employee-detail.component";
 
 
 const routes: Routes = [
@@ -18,6 +20,10 @@ const routes: Routes = [
     path: 'list',
     component: EmployeeListComponent,
   },
+  {
+    path: 'detail',
+    component: EmployeeDetailComponent,
+  },
 
 ];
 
@@ -25,6 +31,8 @@ const routes: Routes = [
   declarations: [
     EmployeeNewComponent,
     EmployeeListComponent,
+    EmployeeDetailComponent
+
   ],
   imports: [
     CommonModule,
@@ -33,6 +41,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     UiModule,
+
   ],
   providers: [],
 })

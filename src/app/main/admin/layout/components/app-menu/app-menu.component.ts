@@ -31,12 +31,12 @@ export class AppMenuComponent implements OnInit {
             label: 'Manage Employee',
             items: [
               {
-                label: 'New Employee',
+                label: 'New',
                 icon: 'pi pi-fw pi-check-square',
                 routerLink: ['/admin/pages/employee/new'],
               },
               {
-                label: 'Employee List',
+                label: 'List',
                 icon: 'pi pi-fw pi-check-square',
                 routerLink: ['/admin/pages/employee/list'],
               },
@@ -65,16 +65,12 @@ export class AppMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-check-square',
                 routerLink: ['/admin/user/list'],
               },
-              {
-                label: 'New',
-                icon: 'pi pi-fw pi-user-plus',
-                routerLink: ['/admin/user/new'],
-              },
-              {
-                label: 'List',
-                icon: 'pi pi-fw pi-user-plus',
-                routerLink: ['/admin/user/new'],
-              },
+              // {
+              //   label: 'New',
+              //   icon: 'pi pi-fw pi-user-plus',
+              //   routerLink: ['/admin/user/new'],
+              // },
+
             ],
           },
         ],

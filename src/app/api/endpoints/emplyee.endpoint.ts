@@ -17,7 +17,7 @@ export class EmployeeEndpoint {
   constructor(private readonly httpClient: HttpClient) { }
 
   list() {
-    return this.httpClient.get<{ data: EmployeeResource[] }>(`${this.baseUrl}/employees`);
+    return this.httpClient.get<{ data: EmployeeResource[] }>(`${this.baseUrl}/employee`);
 
   }
 
@@ -25,7 +25,7 @@ export class EmployeeEndpoint {
     return this.httpClient.post<{ data: EmployeeResource }>(`${this.baseUrl}/employee`, data);
   }
 
-  singleemployee(id: number) {
+  singleEmployee(id: number) {
     return this.httpClient.get<{ data: EmployeeResource }>(`${this.baseUrl}/employee/${id}`);
   }
 

@@ -185,7 +185,7 @@ export class EmployeeNewComponent implements OnInit {
         this.appLoadingService.stopLoading();
 
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/admin/pages/employee/new']);
 
       },
       error: (err) => {
