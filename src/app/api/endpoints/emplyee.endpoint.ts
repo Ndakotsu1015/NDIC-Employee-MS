@@ -29,8 +29,8 @@ export class EmployeeEndpoint {
     return this.httpClient.get<{ data: EmployeeResource }>(`${this.baseUrl}/employee/${id}`);
   }
 
-  updateemployee(data: EmployeeRequest, id: string) {
-    return this.httpClient.patch<{ data: EmployeeResource }>(`${this.baseUrl}/employee/${id}`, data);
+  updateemployee(id: number, data: EmployeeRequest) {
+    return this.httpClient.put<{ data: EmployeeResource }>(`${this.baseUrl}/employee/${id}`, data);
   }
 
   delete(id: number) {

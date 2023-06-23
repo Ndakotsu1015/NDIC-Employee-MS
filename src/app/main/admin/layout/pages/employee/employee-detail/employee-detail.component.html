@@ -1,184 +1,250 @@
-<p-confirmDialog header="Confirmation" key="confirm1" icon="pi pi-exclamation-triangle"
-  message="Are you sure you want to proceed?" [style]="{ width: '350px' }" acceptButtonStyleClass="p-button-text"
+<!-- Dialog start -->
+<p-confirmDialog [style]="{width: '30vw'}" [baseZIndex]="10000"
   rejectButtonStyleClass="p-button-text"></p-confirmDialog>
-<div class="card">
-  <div class="grid" *ngIf="!operation || operation === 'Update'">
-    <div class="col-10 md:col-4 mb-4 px-5">
-      <div class="text-700 mb-1 font-medium text-green-500">
-        Variant Name:
-      </div>
-      <span class="text-900 line-height-3">{{
-        updateEmployee?.name
-        }}</span>
-    </div>
-    <div class="col-10 md:col-4 mb-4 px-5">
-      <div class="text-700 mb-1 font-medium text-green-500">
-        Variant Price:
-      </div>
-      <span class="text-900 line-height-3">{{
-        updateEmployee?.state_id
-        }}</span>
-    </div>
-    <div class="col-10 md:col-4 mb-4 px-5">
-      <div class="text-700 mb-1 font-medium text-green-500">
-        Commodity:
-      </div>
-      <span class="text-900 line-height-3">{{
-        selectedEmployee?.name
-        }}</span>
-    </div>
-    <div class="col-10 md:col-4 mb-4 px-5">
-      <div class="text-700 mb-1 font-medium text-green-500">
-        Measuring Unit:
-      </div>
-      <span class="text-900 line-height-3">{{
-        selectedEmployee?.state_id
-        }}</span>
-    </div>
+<!-- Dialog end -->
 
-    <div class="col-10 md:col-4 mb-4 px-5">
-      <div class="text-700 mb-1 font-medium text-green-500">
-        Image:
+<p-card>
+  <div *ngIf="!updateMode">
+    <div class="grid">
+      <div class="col-8 md:col-4  mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-key mr-1"></i>Employee Identification
+          Number:
+        </div>
+        <span class="text-900 line-height-3">{{data?.id}}</span>
       </div>
-      <span class="text-900 line-height-3">
-        <img style="border-radius: 6px" class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
-          [src]="imageFile" style="max-width: 100px; max-height: 100px" onError="this.src='assets/images/noimage.gif';"
-          alt="User avatar" />
-      </span>
+      <div class="col-8 md:col-4 mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-user mr-1"></i>Full Name:</div>
+        <span class="text-900 line-height-3">{{data?.name}}</span>
+      </div>
+      <div class="col-8 md:col-4 mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-envelope mr-1"></i>Contact Email</div>
+        <span class="text-900 line-height-3">{{data?.email}}</span>
+      </div>
+
+      <div class="col-12 md:col-4 mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-phone mr-1"></i>Mobile Number:</div>
+        <span class="text-900 line-height-3">{{data?.phone_number}}</span>
+      </div>
+      <div class="col-12 md:col-4 mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-map-marker mr-1"></i>Contact Address:
+        </div>
+        <span class="text-900 line-height-3">{{data?.address}}</span>
+      </div>
+      <div class="col-12 md:col-4 mb-4 px-5">
+        <div class="text-700 mb-1 font-medium text-green-500"><i class="pi pi-calendar mr-1"></i>Date of Birth:</div>
+        <span class="text-900 line-height-3">{{data?.date_of_birth}}</span>
+      </div>
+
     </div>
-    <hr style="width: 100%" />
-    <div class="flex align-items-end justify-content-between w-full">
-      <button pButton type="button" icon="pi pi-arrow-left" (click)="back()" label="Go Back"
-        class="ml-5 p-button-outlined p-button-danger"></button>
-
-      <div>
-        <button pButton type="button" icon="pi pi-trash" (click)="delete()" class="p-button-outlined p-button-danger"
-          label="Delete"></button>
-
-        <button pButton type="button" icon="pi pi-pencil" (click)="processRequest()" [label]="
-            operation === 'Update' ? operation : 'Edit'
-          " class="ml-5 p-button-outlined p-button-success"></button>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" header="Commodity Variant" *ngIf="operation === 'Edit'">
-    <h5>Update Commodity Variant</h5>
-    <br />
-    <form class="form" [formGroup]="employeeForm">
-      <div class="p-fluid p-formgrid grid">
-        <div class="field col-8 md:col-6">
-          <span class="p-float-label">
-            <input pInputText id="user-group-name" type="text" placeholder="" formControlName="name" [class.ng-invalid]="
-                employeeFormControls['name']
-                  .invalid &&
-                employeeFormControls['name'].touched
-              " />
-            <label for="user-group-name">Employee's Name</label>
-          </span>
-          <div *ngIf="
-              employeeFormControls['name']
-                .invalid &&
-              employeeFormControls['name'].touched
-            " class="p-error block">
-            <small id="username2-help" class="p-error block" *ngIf="employeeFormControls['name'].errors?.['required']">
-              This field is required
-            </small>
-            <small id="username2-help" class="p-error block" *ngIf="employeeFormControls['name'].errors?.['minlength']">
-              Characters must be at least 3
-            </small>
-          </div>
-        </div>
-        <div class="field col-8 md:col-6">
-          <span class="p-float-label">
-            <input pInputText id="user-group-name" type="text" placeholder="" formControlName="price"
-              [class.ng-invalid]="
-                employeeFormControls['state_id']
-                  .invalid &&
-                employeeFormControls['state_id']
-                  .touched
-              " />
-            <label for="user-group-name">Employee's State of Origin</label>
-          </span>
-          <div *ngIf="
-              employeeFormControls['state_id']
-                .invalid &&
-              employeeFormControls['state_id'].touched
-            " class="p-error block">
-            <small id="username2-help" class="p-error block"
-              *ngIf="employeeFormControls['state_id'].errors?.['required']">
-              This field is required
-            </small>
-            <small id="username2-help" class="p-error block"
-              *ngIf="employeeFormControls['state_id'].errors?.['minlength']">
-              Characters must be at least 3
-            </small>
-          </div>
-        </div>
-        <div class="field col-8 md:col-6">
-          <p-dropdown [options]="employees" [class.is-invalid]="
-              employeeForm.controls['name']
-                .invalid &&
-              employeeForm.controls['name']
-                .touched
-            " name="name" id="name" formControlName="name" optionLabel="name"></p-dropdown>
-          <div *ngIf="
-              employeeForm.controls['name']
-                .invalid &&
-              employeeForm.controls['name']
-                .touched
-            ">
-            <small *ngIf="employeeForm.controls['name'].errors?.['required']" class="p-error blockr">
-              Employee's Name is Required</small>
-          </div>
-        </div>
-        <div class="field col-8 md:col-6">
-          <p-dropdown [options]="lgas" [class.is-invalid]="
-              employeeForm.controls[
-                'local_government_id'
-              ].invalid &&
-              employeeForm.controls[
-                'local_government_id'
-              ].touched
-            " name="local_government_id" id="local_government_id" formControlName="name"
-            optionLabel="State"></p-dropdown>
-          <div *ngIf="
-              employeeForm.controls[
-                'marital_status_id'
-              ].invalid &&
-              employeeForm.controls[
-                'marital_status_id'
-              ].touched
-            ">
-            <small *ngIf="employeeForm.controls['marital_status_id'].errors?.['required']" class="p-error blockr">
-              Marital Status is Required</small>
-          </div>
-        </div>
-        <div class="flex align-content-center w-5">
-          <div class="shadow-2 p-3 h-full flex flex-column surface-card" style="border-radius: 6px">
-            <div class="text-900 font-medium text-xl mb-2">
-              Image Upload
-            </div>
-            <div class="text-600 mb-3">
-              Allowed JPG, GIF or PNG. Max size of 800kB
-            </div>
-            <img style="border-radius: 6px" class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
-              [src]="imageFile" style="max-width: 100px; max-height: 100px"
-              onError="this.src='assets/images/noimage.gif';" alt="User avatar" />
-            <button pButton pRipple label="Upload Image" (click)="imageFileRef.click()"
-              class="p-3 w-full mt-auto p-button-success"></button>
-            <input type="file" #imageFileRef name="ImageUpload" id="ImageUpload" hidden accept="image/*"
-              (change)="handleFileInputUploadImage($event)" />
-          </div>
-        </div>
-      </div>
+    <div>
       <hr />
       <div class="flex justify-content-between w-full">
-        <button pButton type="button" icon="pi pi-arrow-left" (click)="back()" label="Go Back"
-          class="mr-5 p-button-outlined p-button-danger"></button>
-        <button pButton type="button" icon="pi pi-eye" label="Preview" (click)="preview()"
-          class="p-button-outlined p-button-primary" [disabled]="employeeForm.invalid"></button>
+        <button pRipple pButton pRipple type="button" label="Go Back" (click)="goBack()"
+          class="p-button-outlined p-button-warning" icon="pi pi-arrow-left" iconPos="left"></button>
+
+        <div>
+          <button pButton pRipple icon="pi pi-trash" iconPos="right" type="button" label="Delete"
+            (click)="deleteEmployee()" class="p-button-outlined p-button-danger"></button>
+
+          <button pButton pRipple icon="pi pi-pencil" iconPos="right" type="button" label="Edit"
+            (click)="editEmployee(data)" class="p-button-outlined p-button-primary ml-5  mr-1"></button>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
-</div>
+
+  <div *ngIf="updateMode">
+    <div class="grid">
+
+      <div class="col-12 md:col-12 ">
+
+        <div class="card p-fluid">
+          <h5 style="color:#17A2B8">Update Employee</h5>
+          <form [formGroup]="employeeForm" (ngSubmit)="updateEmployee()">
+
+            <div class="flex justify-content-between lg:col-6 justify-content-center">
+              <div class="field col-6">
+
+                <div class="lg:col-8 sm:col-12  md:col-6 ">
+                  Image Upload
+                </div>
+
+                <div class="text-600" style="height: 35px;">
+                  Allowed JPG, GIF or PNG. Max size of
+                  800kB
+                </div>
+                <div class="flex justify-content-center">
+                  <img style="border-radius: 6px" class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
+                    [src]="uploadedImage" style="
+                max-width: 100px;
+                max-height: 100px;
+              " />
+
+                </div>
+                <button pButton pRipple label="Upload Image" type="button" (click)="imageFile.click()"
+                  class="p-3 w-full mt-auto p-button-info"></button>
+                <input type="file" #imageFile name="ImageUpload" id="ImageUpload" hidden accept="image/*" (change)="
+                  handleFileInputUploadImage($event)
+                " />
+
+              </div>
+            </div>
+
+            <div class="field col-6 justify-content-center">
+              <p-toast></p-toast>
+              <div class="lg:col-8 sm:col-12 md:col-6">
+                Upload Files
+                <div class="field col-6 justify-content-center ml-5">
+                  <p-toast></p-toast>
+                  Allowed PDF, CSV, DOC, XDOC, Xcel
+                </div>
+              </div>
+
+
+
+              <p-toast></p-toast>
+              <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php"
+                (onUpload)="onUpload($event)" [multiple]="true" accept="image/*" [maxFileSize]="1000000">
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+            </div>
+
+            <div class="p-formgrid grid">
+
+              <div class="field col">
+                <label htmlFor="state">Name of Employee
+                  <span class="p-error">
+                    *</span> </label>
+                <input pInputText id="name" type="text" formControlName="name" placeholder="Enter Name" />
+
+                <small class="p-error block" *ngIf="employeeFormControls['name'].errors?.['required']
+                          && employeeFormControls['name'].touched">
+                  Employee name is required
+                </small>
+
+              </div>
+              <div class="field col">
+                <label For="email">Email
+                  <span class="p-error">
+                    *</span>
+                </label>
+                <input pInputText id="email" type="text" formControlName="email" placeholder="Enter Email Address" />
+                <small class="p-error block" *ngIf="employeeFormControls['email'].errors?.['required']
+                          && employeeFormControls['email'].touched">
+                  Email address is required
+                </small>
+              </div>
+            </div>
+            <div class="p-formgrid grid">
+              <div class="field col">
+                <label For="state">State of Origin
+                  <span class="p-error">
+                    *</span>
+                </label>
+                <p-dropdown [options]="states" optionLabel="name" placeholder="Select State" formControlName="state_id"
+                  optionValue="id">
+                </p-dropdown>
+                <small class="p-error block" *ngIf="employeeFormControls['state_id'].errors?.['required']
+                          && employeeFormControls['state_id'].touched">
+                  Email address is required
+                </small>
+              </div>
+              <div class="field col">
+                <label for="lga">Local Government
+                  <span class="p-error">
+                    *</span>
+                </label>
+                <p-dropdown [options]="lgas" optionLabel="name" formControlName="local_government_id"
+                  placeholder="Select Local Government" optionValue="id"></p-dropdown>
+                <small class="p-error block" *ngIf="employeeFormControls['local_government_id'].errors?.['required']
+                          && employeeFormControls['local_government_id'].touched">
+                  Local government is required
+                </small>
+              </div>
+            </div>
+            <div class="p-formgrid grid">
+              <div class="field col">
+                <label htmlFor="martitalStatus">Marital Status
+                  <span class="p-error">
+                    *</span>
+                </label>{{employeeFormControls['marital_status_id'].value}}
+                <p-dropdown [options]="martitalStatus" optionLabel="status" placeholder="Select Marital Staus"
+                  formControlName="marital_status_id" optionValue="id"></p-dropdown>
+
+              </div>
+              <div class="field col">
+                <label For="email2">Date of Birth
+                  <span class="p-error">
+                    *</span>
+                </label>{{employeeFormControls['date_of_birth'].value}}
+                <p-calendar formControlName="date_of_birth" [showIcon]="true" dateFormat="yy-mm-dd"
+                  [maxDate]="today"></p-calendar>
+                <small class="p-error block" *ngIf="employeeFormControls['date_of_birth'].errors?.['required']
+                          && employeeFormControls['date_of_birth'].touched">
+                  Date of birth is required
+                </small>
+              </div>
+
+            </div>
+
+            <div class="p-formgrid grid">
+              <div class="field col">
+                <label For="address">Contact Address
+                  <span class="p-error">
+                    *</span>
+                </label>
+                <textarea rows="2" cols pInputTextarea formControlName="address">
+                </textarea>
+                <small class="p-error block" *ngIf="employeeFormControls['address'].errors?.['required']
+                        && employeeFormControls['address'].touched">
+                  Contact address is required
+                </small>
+
+              </div>
+              <div class="field col">
+                <label htmlFor="state">Mobile Number
+                  <span class="p-error">
+                    *</span> </label>
+                <input pInputText id="name" type="text" formControlName="phone_number"
+                  placeholder="Enter Phone Number" />
+
+                <small class="p-error block" *ngIf="employeeFormControls['phone_number'].errors?.['required']
+                          && employeeFormControls['phone_number'].touched">
+                  Phone number is required
+                </small>
+
+              </div>
+
+            </div>
+
+            <hr style="color: blue;">
+
+
+            <div class="flex justify-content-between w-full">
+
+              <div class="field-col">
+                <button pButton type="button" icon="pi pi-arrow-left" routerLink="/admin/pages/employee/list"
+                  label="Go Back" class="mr-5 p-button-outlined p-button-danger"></button>
+              </div>
+
+
+              <div class="field-col">
+                <button pButton type="submit" icon="pi pi-pencil" iconPos="right" label="Update"
+                  class="p-button-outlined p-button-primary" [disabled]="employeeForm.invalid"></button>
+              </div>
+
+            </div>
+
+
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</p-card>

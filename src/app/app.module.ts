@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UiModule } from './main/ui/ui.module';
 import { httpInterceptorProviders } from './api/interceptors/interceptors';
 import { appReducer } from './store/app.reducer';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -24,6 +25,7 @@ import { appReducer } from './store/app.reducer';
 
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

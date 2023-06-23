@@ -1,4 +1,3 @@
-
 <div class="grid">
 
   <div class="col-12 md:col-12 ">
@@ -7,12 +6,10 @@
       <h5 style="color:#17A2B8">Employee Registration</h5>
       <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
 
-        <div
-          class="flex justify-content-between lg:col-6 justify-content-center">
+        <div class="flex justify-content-between lg:col-6 justify-content-center">
           <div class="field col-6">
 
-            <div
-              class="lg:col-8 sm:col-12  md:col-6 ">
+            <div class="lg:col-8 sm:col-12  md:col-6 ">
               Image Upload
             </div>
 
@@ -21,85 +18,36 @@
               800kB
             </div>
             <div class="flex justify-content-center">
-              <img
-                style="border-radius: 6px"
-                class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
-                [src]="uploadedImage"
-                style="
+              <img style="border-radius: 6px" class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
+                [src]="uploadedImage" style="
             max-width: 100px;
             max-height: 100px;
           " />
 
             </div>
-            <button
-              pButton
-              pRipple
-              label="Upload Image"
-              type="button"
-              (click)="imageFile.click()"
+            <button pButton pRipple label="Upload Image" type="button" (click)="imageFile.click()"
               class="p-3 w-full mt-auto p-button-info"></button>
-            <input
-              type="file"
-              #imageFile
-              name="ImageUpload"
-              id="ImageUpload"
-              hidden
-              accept="image/*"
-              (change)="
+            <input type="file" #imageFile name="ImageUpload" id="ImageUpload" hidden accept="image/*" (change)="
               handleFileInputUploadImage($event)
             " />
 
           </div>
-          <div class="field col-6 justify-content-center">
 
-            <div
-              class="lg:col-8 sm:col-12 md:col-6">
-              Upload File
-            </div>
+        </div>
 
-            <div class="text-600" style="height: 35px;">
-              Allowed PDF,TEXT, WORD Max size of
-              800kB
-            </div>
-            <!-- <p-fileupload name="demo[]"
-              url="https://www.primefaces.org/cdn/api/upload.php"
-              (onUpload)="onUpload($event)" [multiple]="true" accept="image/*">
-              <ng-template pTemplate="content">
-                <ul *ngIf="uploadedFiles.length">
-                  <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{
-                    file.size }} bytes</li>
-                </ul>
-              </ng-template>
-            </p-fileupload> -->
-            <div class="flex justify-content-center">
-              <img
-                style="border-radius: 6px"
-                class="border rounded shadow-1 img-fix-h img-min-w img-fill-con mb-3"
-                [src]="uploadedImage"
-                style="
-            max-width: 100px;
-            max-height: 100px;
-          " />
-            </div>
-            <button
-              pButton
-              type="button"
-              pRipple
-              label="Upload Image"
-              (click)="imageFile.click()"
-              class="p-3 w-full mt-auto p-button-info"></button>
-            <input
-              type="file"
-              #imageFile
-              name="ImageUpload"
-              id="ImageUpload"
-              hidden
-              accept="image/*"
-              (change)="
-              handleFileInputUploadImage($event)
-            " />
-
+        <div class="field col-6 justify-content-center">
+          <p-toast></p-toast>
+          <div class="lg:col-8 sm:col-12 md:col-6">
+            Upload Files
           </div>
+          <p-fileUpload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="onUpload($event)"
+            [multiple]="true" accept="image/*" [maxFileSize]="1000000">
+            <ng-template pTemplate="content">
+              <ul *ngIf="uploadedFiles.length">
+                <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+              </ul>
+            </ng-template>
+          </p-fileUpload>
         </div>
 
         <div class="p-formgrid grid">
@@ -108,11 +56,9 @@
             <label htmlFor="state">Name of Employee
               <span class="p-error">
                 *</span> </label>
-            <input pInputText id="name" type="text" formControlName="name"
-              placeholder="Enter Name" />
+            <input pInputText id="name" type="text" formControlName="name" placeholder="Enter Name" />
 
-            <small class="p-error block"
-              *ngIf="employeeFormControls['name'].errors?.['required']
+            <small class="p-error block" *ngIf="employeeFormControls['name'].errors?.['required']
                       && employeeFormControls['name'].touched">
               Employee name is required
             </small>
@@ -123,10 +69,8 @@
               <span class="p-error">
                 *</span>
             </label>
-            <input pInputText id="email" type="text" formControlName="email"
-              placeholder="Enter Email Address" />
-            <small class="p-error block"
-              *ngIf="employeeFormControls['email'].errors?.['required']
+            <input pInputText id="email" type="text" formControlName="email" placeholder="Enter Email Address" />
+            <small class="p-error block" *ngIf="employeeFormControls['email'].errors?.['required']
                       && employeeFormControls['email'].touched">
               Email address is required
             </small>
@@ -138,12 +82,10 @@
               <span class="p-error">
                 *</span>
             </label>
-            <p-dropdown [options]="states" optionLabel="name"
-              placeholder="Select State" formControlName="state_id"
+            <p-dropdown [options]="states" optionLabel="name" placeholder="Select State" formControlName="state_id"
               optionValue="id">
             </p-dropdown>
-            <small class="p-error block"
-              *ngIf="employeeFormControls['state_id'].errors?.['required']
+            <small class="p-error block" *ngIf="employeeFormControls['state_id'].errors?.['required']
                       && employeeFormControls['state_id'].touched">
               Email address is required
             </small>
@@ -153,12 +95,9 @@
               <span class="p-error">
                 *</span>
             </label>
-            <p-dropdown [options]="lgas" optionLabel="name"
-              formControlName="local_government_id"
-              placeholder="Select Local Government"
-              optionValue="id"></p-dropdown>
-            <small class="p-error block"
-              *ngIf="employeeFormControls['local_government_id'].errors?.['required']
+            <p-dropdown [options]="lgas" optionLabel="name" formControlName="local_government_id"
+              placeholder="Select Local Government" optionValue="id"></p-dropdown>
+            <small class="p-error block" *ngIf="employeeFormControls['local_government_id'].errors?.['required']
                       && employeeFormControls['local_government_id'].touched">
               Local government is required
             </small>
@@ -170,10 +109,8 @@
               <span class="p-error">
                 *</span>
             </label>{{employeeFormControls['marital_status_id'].value}}
-            <p-dropdown [options]="martitalStatus" optionLabel="status"
-              placeholder="Select Marital Staus"
-              formControlName="marital_status_id"
-              optionValue="id"></p-dropdown>
+            <p-dropdown [options]="martitalStatus" optionLabel="status" placeholder="Select Marital Staus"
+              formControlName="marital_status_id" optionValue="id"></p-dropdown>
 
           </div>
           <div class="field col">
@@ -181,11 +118,9 @@
               <span class="p-error">
                 *</span>
             </label>
-            <p-calendar formControlName="date_of_birth" [showIcon]="true"
-              dateFormat="yy-mm-dd"
+            <p-calendar formControlName="date_of_birth" [showIcon]="true" dateFormat="yy-mm-dd"
               [maxDate]="today"></p-calendar>
-            <small class="p-error block"
-              *ngIf="employeeFormControls['date_of_birth'].errors?.['required']
+            <small class="p-error block" *ngIf="employeeFormControls['date_of_birth'].errors?.['required']
                       && employeeFormControls['date_of_birth'].touched">
               Date of birth is required
             </small>
@@ -199,11 +134,9 @@
               <span class="p-error">
                 *</span>
             </label>
-            <textarea rows="2" cols pInputTextarea
-              formControlName="address">
+            <textarea rows="2" cols pInputTextarea formControlName="address">
             </textarea>
-            <small class="p-error block"
-              *ngIf="employeeFormControls['address'].errors?.['required']
+            <small class="p-error block" *ngIf="employeeFormControls['address'].errors?.['required']
                     && employeeFormControls['address'].touched">
               Contact address is required
             </small>
@@ -213,12 +146,9 @@
             <label htmlFor="state">Mobile Number
               <span class="p-error">
                 *</span> </label>
-            <input pInputText id="name" type="text"
-              formControlName="phone_number"
-              placeholder="Enter Phone Number" />
+            <input pInputText id="name" type="text" formControlName="phone_number" placeholder="Enter Phone Number" />
 
-            <small class="p-error block"
-              *ngIf="employeeFormControls['phone_number'].errors?.['required']
+            <small class="p-error block" *ngIf="employeeFormControls['phone_number'].errors?.['required']
                       && employeeFormControls['phone_number'].touched">
               Phone number is required
             </small>
@@ -229,9 +159,8 @@
 
         <hr style="color: blue;">
 
-        <div class="col-1 p-1">
-          <button pButton type="submit" label="Submit"
-            class="p-button-info ml-12 justify-self-right"
+        <div class="col-2 p-1">
+          <button pButton type="submit" label="Submit" class="p-button-outlined p-button-info ml-12 justify-self-right"
             icon="pi pi-user-plus" [disabled]="employeeForm.invalid"></button>
         </div>
       </form>

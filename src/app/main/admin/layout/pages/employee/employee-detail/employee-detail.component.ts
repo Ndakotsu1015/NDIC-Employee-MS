@@ -5,7 +5,7 @@ import { Message, ConfirmationService, MessageService } from 'primeng/api';
 import { AppLoadingService } from '../../../services/app-loading.service';
 import { AppNotificationService } from '../../../services/app-notification.service';
 import { EmployeeEndpoint } from 'src/app/api/endpoints/emplyee.endpoint';
-import { EmployeeResource, UpdateEmployeeDto } from 'src/app/api/models/employee.model';
+import { EmployeeRequest, EmployeeResource, UpdateEmployeeDto } from 'src/app/api/models/employee.model';
 import { StateResource } from 'src/app/api/models/state.model';
 import { LgaResource } from 'src/app/api/models/lga.model';
 import { MaritalStatusResource } from 'src/app/api/models/MaritalStatus.model';
@@ -13,7 +13,7 @@ import { FileUploadEndpoint } from 'src/app/api/endpoints/file-upload-endpoint';
 import { MaritalStatusEndpoint } from 'src/app/api/endpoints/marital-status.endpoint';
 import { StateEndpoint } from 'src/app/api/endpoints/state.end.point';
 import { LgaEndpoint } from 'src/app/api/endpoints/lga.endpoint';
-import { imagePathPrefix } from 'src/app/api/endpoints/api';
+import { filePathPrefix, imagePathPrefix } from 'src/app/api/endpoints/api';
 
 @Component({
   selector: 'app-employee-detail',
@@ -21,242 +21,294 @@ import { imagePathPrefix } from 'src/app/api/endpoints/api';
   styleUrls: ['./employee-detail.component.scss']
 })
 export class EmployeeDetailComponent implements OnInit {
-
-  id: any;
-  operation: any | undefined
-  employees: EmployeeResource[] = [];
+  id!: '';
+  employeeForm: FormGroup;
   states: StateResource[] = [];
-  state?: StateResource;
-  updateEmployee?: UpdateEmployeeDto;
-  selectedEmployee?: EmployeeResource;
   lgas: LgaResource[] = [];
-  lga?: LgaResource;
-  maritalStatus!: MaritalStatusResource;
-  imageFile?: any;
-  uploadedImageName?: any;
-  loading = false;
+  _lgas: LgaResource[] = [];
+  employee!: EmployeeResource;
+  employeeRequestForm!: EmployeeRequest;
+  martitalStatus: MaritalStatusResource[] = [];
+  uploadedFiles: any[] = [];
+  SelectedImage = Image;
+  today = new Date();
+  uploadImage?: string;
+  uploadedImage?: string;
+  uploadedFile?: string;
+  uploadedImageName!: string;
+  uploadedFileName!: string
+  updateMode = false;
+  formRequestData: any;
+  data: any;
 
-  employeeForm: FormGroup = this.fb.group({
-    name: this.fb.control('', [Validators.required, Validators.minLength(3)]),
-    phone_number: this.fb.control('', [Validators.required, Validators.maxLength(14)]),
-    email: this.fb.control('', [Validators.required, Validators.minLength(3)]),
-    address: this.fb.control('', [Validators.required]),
-    state_id: this.fb.control<StateResource | null>(null, [Validators.required]),
-    local_government_id: this.fb.control<LgaResource | null>(null, [Validators.required]),
-    marital_status_id: this.fb.control<MaritalStatusResource | null>(null, [Validators.required]),
-  });
+  filePrefix = filePathPrefix;
+  imagePrefix = imagePathPrefix;
 
   constructor(
-    private fb: FormBuilder,
+    private readonly router: Router,
+    private _fb: FormBuilder,
+    private employeeEndpoint: EmployeeEndpoint,
+    private stateEndpoint: StateEndpoint,
+    private lgaEndpoint: LgaEndpoint,
+    private maritalStatusEndpoint: MaritalStatusEndpoint,
     private route: ActivatedRoute,
-    private router: Router,
-    private confirmationService: ConfirmationService,
     private appLoadingService: AppLoadingService,
     private appNotificationService: AppNotificationService,
-    private readonly fileUploadEndpoint: FileUploadEndpoint,
-    private employeeEndpoint: EmployeeEndpoint,
-    private maritalStatusEndpoint: MaritalStatusEndpoint,
-    private stateEndpoint: StateEndpoint, private lgaEndpint: LgaEndpoint
-  ) { }
+    private fileUploadEndpoint: FileUploadEndpoint
+
+  ) {
+    this.employeeForm = this._fb.group({
+      name: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      address: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      email: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/), Validators.email]),
+      phone_number: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/), Validators.pattern(/^[+234]\d{13}$/)]),
+      date_of_birth: new FormControl(null),
+      // image: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      // file: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      state_id: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      local_government_id: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+      marital_status_id: new FormControl(null, [Validators.required, Validators.pattern(/^\S.*$/)]),
+    });
+  }
+
+
 
   ngOnInit(): void {
+    this.appLoadingService.startLoading('processing');
+    this.route.params.subscribe((params) => {
 
-    this.appLoadingService.startLoading('loading');
-    this.route.params.subscribe(params => {
+      // console.log('My', params['id'])
+
       if (params['id']) {
         this.id = params['id'];
-        this.employeeEndpoint.singleEmployee(this.id).subscribe({
+        this.employeeEndpoint.singleEmployee(params['id']).subscribe({
           next: (response) => {
+            if (response.data) {
+              this.data = response.data;
+              this.uploadedImage = this.data.image;
+            }
             this.appLoadingService.stopLoading();
-            this.selectedEmployee = response.data;
-            this.updateEmployee = {
-              id: this.selectedEmployee.id,
-              name: this.selectedEmployee.name,
-              date_of_birth: this.selectedEmployee.date_of_birth,
-              phone_number: this.selectedEmployee.phone_number,
-              email: this.selectedEmployee.email,
-              address: this.selectedEmployee.email,
-              state_id: this.selectedEmployee.state_id,
-              local_government_id: this.selectedEmployee.local_government_id,
-              marital_status_id: this.selectedEmployee.marital_status_id,
-              image: this.selectedEmployee?.image,
-              file: this.selectedEmployee?.file,
-            };
-            this.uploadedImageName = this.selectedEmployee?.image;
-            this.imageFile = imagePathPrefix + this.selectedEmployee?.image;
-
           },
           error: (error) => {
             this.appLoadingService.stopLoading();
-            this.appNotificationService.showError({
-              title: 'Oops!!!',
-              detail: error.error.message
-            });
-            this.back();
           }
         });
-
       }
-    }
-    );
+      this.appLoadingService.stopLoading();
+    });
 
-    this.stateEndpoint.list()
+    this.employeeFormControls['state_id'].valueChanges
       .subscribe({
-        next: (data) => {
-          // this.state = data;
-          console.log(data)
-          this.appLoadingService.stopLoading();
-        },
-        error: (err) => {
-          this.appNotificationService.showError({ title: err });
-          this.appLoadingService.stopLoading();
+        next: (stateId: number) => {
+          this.lgas = this._lgas.filter(e => e.state_id == stateId)
         }
       });
 
-    this.lgaEndpint.list()
-      .subscribe({
-        next: (data) => {
-          // this.states = data;
-          console.log(data)
-          this.appLoadingService.stopLoading();
-        },
-        error: (err) => {
-          this.appNotificationService.showError({ title: err });
-          this.appLoadingService.stopLoading();
-        }
-      });
-  }
+    this.appLoadingService.startLoading('Loading Data...');
+    this.route.data.subscribe({
+      next: (data) => {
+        this.appLoadingService.stopLoading();
+        this.employee = data['employee'];
+        console.log('emmp', data)
+      }
+    });
 
-  get employeeFormControls() {
-    return this.employeeForm.controls;
+    this.stateEndpoint.list().subscribe({
+      next: (response) => {
+        this.states = response.data;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+    this.lgaEndpoint.list().subscribe({
+      next: (response) => {
+        this._lgas = response.data;
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    });
+
+    this.maritalStatusEndpoint.list().subscribe({
+      next: (response) => {
+        this.martitalStatus = response.data;
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    });
+
   }
 
   back() {
     window.history.back();
   }
 
-  processRequest() {
-    if (this.operation === 'Update') {
-      this.appLoadingService.startLoading('Loading...');
-      if (!this.updateEmployee) {
-        return;
-      }
-      this.employeeEndpoint.updateemployee(this.id, this.operation.id).subscribe({
-        next: () => {
-          this.appLoadingService.stopLoading();
-          this.appNotificationService.showSuccess({
-            title: 'Employee Update',
-            detail: 'Record was Successfully Updated'
-          });
-          this.resetForm();
-        },
-        error: (error) => {
-          this.appLoadingService.stopLoading();
-          this.operation = 'Edit';
-          this.appNotificationService.showError({
-            title: 'Oops',
-            detail: error.error.message,
-          });
-        }
-      });
+  getStateName(stateId: number) {
+    if (stateId) {
+      const state = this.states.find((item) => item.id === stateId);
+
+      return state?.name
     }
-    else {
-      this.operation = 'Edit';
-      this.employeeForm.patchValue({
-        name: this.selectedEmployee?.name,
-        state_id: this.selectedEmployee?.state_id,
-        local_government_id: this.selectedEmployee?.local_government_id,
-        marital_status_id: this.selectedEmployee?.marital_status_id,
-        address: this.selectedEmployee?.address,
-        phone_number: this.selectedEmployee?.phone_number,
-        uploadedImageName: this.selectedEmployee?.image,
-        imageFile: imagePathPrefix + this.selectedEmployee?.image,
+    return '';
+  }
 
-      });
+  getLGAName(lgaId: number) {
+    if (lgaId) {
+      const lga = this.lgas.find((item) => item.id === lgaId);
+
+      return lga?.name;
     }
-
+    return '';
   }
 
-  delete() {
-    this.confirmationService.confirm({
-      key: 'confirm1',
-      message: 'Are you sure to perform this action?',
-      accept: () => {
-        this.appLoadingService.startLoading('loading..');
-        this.employeeEndpoint.delete(this.id).subscribe({
-          next: () => {
-            this.appLoadingService.stopLoading()
-            this.appNotificationService.showSuccess({
-              title: 'Commodity',
-              detail: 'was Succefully Deleted',
-            });
-          },
-          error: (error) => {
-            this.appLoadingService.stopLoading()
-            this.appNotificationService.showError({
-              title: 'Oops!!!',
-              detail: error.error.message,
-            });
-          }
-        });
-        return this.router.navigate(['/adim/pages/employee/detail']);
-      },
-      reject: () => {
-        this.appNotificationService.showInfo({
-          title: 'Oops!!!',
-          detail: 'Operation was Cancelled',
-        });
-      }
-
-    });
-  }
-
-  preview() {
-    const state_id = this.employeeForm.controls['state_id'].value;
-    const local_government_id = this.employeeForm.controls['local_government_id'].value;
-    const address = this.employeeForm.controls['address'].value;
-    const name = this.employeeForm.controls['name'].value;
 
 
-    this.selectedEmployee = this.employees.find(e => e.id == state_id);
-    this.selectedEmployee = this.employees.find(e => e.id == local_government_id);
-    this.selectedEmployee = this.employees.find(e => e.id == local_government_id);
-    this.selectedEmployee = this.employees.find(e => e.id == name);
-    this.selectedEmployee = this.employees.find(e => e.id == address);
-
-    // this.updateEmployee = {
-    //   name: this.employeeForm.value.name,
-    //   state_id: this.employeeForm.value.state_id,
-    //   local_government_id: this.employeeForm.value.local_government_id,
-    //   marital_status_id: this.employeeForm.value.marital_status_id,
-    //   address: this.employeeForm.value.address,
-    //   phone_number: this.employeeForm.value.phone_number,
-    //   uploadedImageName: this.employeeForm.value.image,
-    //   imageFile: imagePathPrefix + this.employeeForm.value.image,
-    // };
-
-    this.operation = 'Update';
-  }
-  resetForm() {
-    this.employeeForm.reset();
-    this.operation = '';
+  // Form Controls out of ngOnInit
+  get employeeFormControls() {
+    return this.employeeForm.controls
   }
 
   handleFileInputUploadImage(e: any) {
-
+    console.log('file,,,,,s', e)
     const file = e.target.files[0];
     const formData: FormData = new FormData();
-    formData.append('image_file', file, file.name);
+    formData.append('file', file, file.name);
 
     this.fileUploadEndpoint.imageUpload(formData).subscribe({
       next: (response) => {
-        this.uploadedImageName = response.filename;
-        this.imageFile = imagePathPrefix + this.uploadedImageName;
+        this.uploadedImageName = response.data;
       },
       error: (error) => {
         console.log(error);
       },
+      complete: () => {
+        this.uploadedImage = imagePathPrefix + this.uploadedImageName;
+      }
     });
+
   }
+  editEmployee(data: any) {
+
+    console.log('Data:', data)
+    const dob = new Date(data.date_of_birth)
+    const formattedDate = dob.getFullYear().toString() + '-' +
+      (+dob.getMonth() + 1).toLocaleString('en-US', {
+        minimumIntegerDigits: 2, useGrouping: false
+      }).toString() + '-' +
+      dob.getDate().toLocaleString('en-US', {
+        minimumIntegerDigits: 2, useGrouping: false
+      }).toString();
+
+    // console.log(this, this.employeeForm.patchValue, ' ', this.uploadedImageName)
+    this.employeeFormControls['name'].patchValue(data.name);
+    this.employeeFormControls['email'].patchValue(data.email);
+    this.employeeFormControls['address'].patchValue(data.address);
+    this.employeeFormControls['phone_number'].patchValue(data.phone_number);
+    this.employeeFormControls['state_id'].patchValue(data.state_id);
+    this.employeeFormControls['local_government_id'].patchValue(data.local_government_id);
+    this.employeeFormControls['marital_status_id'].patchValue(data.marital_status_id);
+    this.employeeFormControls['date_of_birth'].patchValue(formattedDate);
+
+
+
+    this.updateMode = true;
+
+  }
+  updateEmployee() {
+    const frmData = {
+      name: this.employeeFormControls['name'].value,
+      email: this.employeeFormControls['email'].value,
+      address: this.employeeFormControls['address'].value,
+      phone_number: this.employeeFormControls['phone_number'].value,
+      state_id: this.employeeFormControls['state_id'].value,
+      local_government_id: this.employeeFormControls['local_government_id'].value,
+      marital_status_id: this.employeeFormControls['marital_status_id'].value,
+      date_of_birth: this.employeeFormControls['date_of_birth'].value,
+      image: this.uploadedImageName,
+      file: this.uploadedImageName,
+
+    };
+
+    this.formRequestData = frmData;
+    this.appLoadingService.startLoading('Proccessing');
+
+    this.employeeEndpoint.updateemployee(this.data.id, this.formRequestData).subscribe({
+      next: (response) => {
+        this.data = this.formRequestData;
+
+        this.updateMode = false;
+        this.employeeForm.reset();
+        this.appLoadingService.stopLoading();
+        this.appNotificationService.showSuccess({ title: 'success', detail: 'Are you sure you want to update?' });
+        this.router.navigate(['admin/pages/employee/detail']);
+      },
+      error: (err) => {
+        this.appLoadingService.stopLoading();
+      }
+
+    });
+
+  }
+  goBack() {
+    return this.router.navigate(['/admin/pages/employee/list']);
+  }
+
+  deleteEmployee() {
+    this.appLoadingService.startLoading('Proccessing');
+
+    this.employeeEndpoint.delete(this.data.id).subscribe({
+      next: (response) => {
+        this.appLoadingService.stopLoading()
+        return this.router.navigate(['/admin/pages/employee/list']);
+
+        this.appNotificationService.showSuccess({
+          title: 'Success',
+          detail: 'Record Deleted Successfully!!!'
+        });
+      },
+      error: (error) => {
+        this.appLoadingService.stopLoading();
+
+        this.appNotificationService.showError({
+          title: 'Error!!!',
+          detail: error.error.message
+        });
+      }
+    });
+
+
+
+  }
+
+  onUpload(event: any) {
+
+    console.log('my files')
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+      const upload = file;
+
+      const formData: FormData = new FormData();
+      formData.append('file', file, file.name);
+
+      this.fileUploadEndpoint.fileUpload(formData).subscribe({
+        next: (response) => {
+          this.uploadedFileName = response.data;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          this.uploadedFile = filePathPrefix + this.uploadedFileName;
+        }
+      });
+    }
+
+    // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+  }
+
+
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { imagePathPrefix } from 'src/app/api/endpoints/api';
+import { filePathPrefix, imagePathPrefix } from 'src/app/api/endpoints/api';
 import { EmployeeEndpoint } from 'src/app/api/endpoints/emplyee.endpoint';
 import { FileUploadEndpoint } from 'src/app/api/endpoints/file-upload-endpoint';
 import { LgaEndpoint } from 'src/app/api/endpoints/lga.endpoint';
@@ -30,6 +30,10 @@ export class EmployeeNewComponent implements OnInit {
   martitalStatus: MaritalStatusResource[] = [];
   uploadedFiles: any[] = [];
   SelectedImage = Image;
+  item: any;
+  uploadedFile?: string
+  uploadedFileName?: string;
+  filePrefix = filePathPrefix;
 
   today = new Date();
 
@@ -151,7 +155,6 @@ export class EmployeeNewComponent implements OnInit {
   // }
 
   addEmployee() {
-    console.log(this, this.employeeForm.value, ' ', this.uploadedImageName)
     const frmData = {
       name: this.employeeFormControls['name'].value,
       phone_number: this.employeeFormControls['phone_number'].value,
@@ -166,14 +169,11 @@ export class EmployeeNewComponent implements OnInit {
 
     };
 
-
-    console.log('data', frmData)
-
-    this.employeeRequestForm = frmData;
+    // this.employeeRequestForm = frmData;
 
     this.appLoadingService.startLoading('Proccessing');
 
-    this.employeeEndpoint.createemployee(this.employeeRequestForm).subscribe({
+    this.employeeEndpoint.createemployee(frmData).subscribe({
       next: (response) => {
         this.appLoadingService.stopLoading();
 
@@ -219,18 +219,29 @@ export class EmployeeNewComponent implements OnInit {
         this.uploadedImage = imagePathPrefix + this.uploadedImageName;
       }
     });
-
-
   }
+
 
   onUpload(event: any) {
+    console.log('my files')
     for (let file of event.files) {
       this.uploadedFiles.push(file);
-      console.log('File', file)
+      const upload = file;
+
+      const formData: FormData = new FormData();
+      formData.append('file', file, file.name);
+
+      this.fileUploadEndpoint.fileUpload(formData).subscribe({
+        next: (response) => {
+          this.uploadedFileName = response.data;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          this.uploadedFile = filePathPrefix + this.uploadedFileName;
+        }
+      });
     }
-
-    // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
   }
-
-
 }
